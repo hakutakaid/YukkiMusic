@@ -1,0 +1,4 @@
+push
+ganti.sh
+venv/
+__pycache__/
