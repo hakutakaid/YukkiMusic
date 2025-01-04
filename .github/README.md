@@ -30,7 +30,7 @@ Checkout [Docs](https://notreallyshikhar.gitbook.io/yukkimusicbot/deployment/loc
 Reach out to the maintainer at one of the following places:
 
 
-- [Telegram Support](https://t.me/AdityaDiscus)
+- [Telegram Support](https://t.me/DemusIndonesia)
 
 If you want to say **thank you** or/and support active development of YukkiMusicBot:
 

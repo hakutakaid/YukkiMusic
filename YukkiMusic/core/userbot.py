@@ -55,9 +55,7 @@ class Userbot(Client):
         if config.STRING1:
             await self.one.start()
             try:
-                await self.one.join_chat("AdityaServer")
-                await self.one.join_chat("AdityaSource")
-                await self.one.join_chat("AdityaDiscus")
+                await self.one.join_chat("DemusIndonesia")
             except:
                 pass
             assistants.append(1)
@@ -86,9 +84,7 @@ class Userbot(Client):
         if config.STRING2:
             await self.two.start()
             try:
-                await self.two.join_chat("AdityaServer")
-                await self.two.join_chat("AdityaSource")
-                await self.two.join_chat("AdityaDiscus")
+                await self.two.join_chat("DemusIndonesia")
             except:
                 pass
             assistants.append(2)
@@ -117,9 +113,7 @@ class Userbot(Client):
         if config.STRING3:
             await self.three.start()
             try:
-                await self.three.join_chat("AdityaServer")
-                await self.three.join_chat("AdityaSource")
-                await self.three.join_chat("AdityaDiscus")
+                await self.three.join_chat("DemusIndonesia")
             except:
                 pass
             assistants.append(3)
@@ -148,9 +142,7 @@ class Userbot(Client):
         if config.STRING4:
             await self.four.start()
             try:
-                await self.four.join_chat("AdityaServer")
-                await self.four.join_chat("AdityaSource")
-                await self.four.join_chat("AdityaDiscus")
+                await self.four.join_chat("DemusIndonesia")
             except:
                 pass
             assistants.append(4)
@@ -179,9 +171,7 @@ class Userbot(Client):
         if config.STRING5:
             await self.five.start()
             try:
-                await self.five.join_chat("AdityaServer")
-                await self.five.join_chat("AdityaSource")
-                await self.five.join_chat("AdityaDiscus")
+                await self.five.join_chat("DemusIndonesia")
             except:
                 pass
             assistants.append(5)
