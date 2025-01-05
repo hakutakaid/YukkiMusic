@@ -194,79 +194,64 @@ class Call(PyTgCalls):
         await asyncio.sleep(0.5)
         await assistant.leave_call(config.LOG_GROUP_ID)
 
-    async def join_chat(self, chat_id, attempts=1):
-        max_attempts = len(assistants) - 1
+    async def join_assistant(self, original_chat_id, chat_id):
+        language = await get_lang(original_chat_id)
+        _ = get_string(language)
         userbot = await get_assistant(chat_id)
         try:
-            language = await get_lang(chat_id)
-            _ = get_string(language)
-        except Exception:
-            _ = get_string("en")
-        try:
-            chat = await app.get_chat(chat_id)
-        except ChatAdminRequired:
-            raise AssistantErr(_["call_1"])
-        except Exception as e:
-            raise AssistantErr(_["call_3"].format(app.mention, type(e).__name__))
-        if chat_id in links:
-            invitelink = links[chat_id]
-        else:
-            if chat.username:
-                invitelink = chat.username
-                try:
-                    await userbot.resolve_peer(invitelink)
-                except Exception:
-                    pass
-            else:
-                try:
-                    invitelink = await app.export_chat_invite_link(chat_id)
-                except ChatAdminRequired:
-                    raise AssistantErr(_["call_1"])
-                except Exception as e:
-                    raise AssistantErr(
-                        _["call_3"].format(app.mention, type(e).__name__)
-                    )
-
-            if invitelink.startswith("https://t.me/+"):
-                invitelink = invitelink.replace(
-                    "https://t.me/+", "https://t.me/joinchat/"
-                )
-            links[chat_id] = invitelink
-
-        try:
-            await asyncio.sleep(1)
-            await userbot.join_chat(invitelink)
-        except InviteRequestSent:
             try:
-                await app.approve_chat_join_request(chat_id, userbot.id)
-            except Exception as e:
-                raise AssistantErr(_["call_3"].format(type(e).__name__))
-            await asyncio.sleep(1)
-            raise AssistantErr(_["call_6"].format(app.mention))
-        except UserAlreadyParticipant:
-            pass
-        except ChannelsTooMuch:
-            if attempts <= max_attempts:
-                attempts += 1
-                userbot = await set_assistant(chat_id)
-                return await self.join_chat(chat_id, attempts)
+                get = await app.get_chat_member(chat_id, userbot.id)
+            except ChatAdminRequired:
+                raise AssistantErr(_["call_1"])
+            if get.status == "banned" or get.status == "kicked":
+                raise AssistantErr(
+                    _["call_2"].format(userbot.username, userbot.id)
+                )
+        except UserNotParticipant:
+            chat = await app.get_chat(chat_id)
+            if chat.username:
+                try:
+                    await userbot.join_chat(chat.username)
+                except UserAlreadyParticipant:
+                    pass
+                except Exception as e:
+                    raise AssistantErr(_["call_3"].format(e))
             else:
-                raise AssistantErr(_["call_9"].format(config.SUPPORT_GROUP))
-        except FloodWait as e:
-            time = e.value
-            if time < 20:
-                await asyncio.sleep(time)
-                attempts += 1
-                return await self.join_chat(chat_id, attempts)
-            else:
-                if attempts <= max_attempts:
-                    attempts += 1
-                    userbot = await set_assistant(chat_id)
-                    return await self.join_chat(chat_id, attempts)
-
-                raise AssistantErr(_["call_10"].format(time))
-        except Exception as e:
-            raise AssistantErr(_["call_3"].format(type(e).__name__))
+                try:
+                    try:
+                        try:
+                            invitelink = chat.invite_link
+                            if invitelink is None:
+                                invitelink = (
+                                    await app.export_chat_invite_link(
+                                        chat_id
+                                    )
+                                )
+                        except:
+                            invitelink = (
+                                await app.export_chat_invite_link(
+                                    chat_id
+                                )
+                            )
+                    except ChatAdminRequired:
+                        raise AssistantErr(_["call_4"])
+                    except Exception as e:
+                        raise AssistantErr(e)
+                    m = await app.send_message(
+                        original_chat_id, _["call_5"]
+                    )
+                    if invitelink.startswith("https://t.me/+"):
+                        invitelink = invitelink.replace(
+                            "https://t.me/+", "https://t.me/joinchat/"
+                        )
+                    await asyncio.sleep(3)
+                    await userbot.join_chat(invitelink)
+                    await asyncio.sleep(4)
+                    await m.edit(_["call_6"].format(userbot.name))
+                except UserAlreadyParticipant:
+                    pass
+                except Exception as e:
+                    raise AssistantErr(_["call_3"].format(e))
 
     async def join_call(
         self,
@@ -296,7 +281,7 @@ class Call(PyTgCalls):
             )
         except NoActiveGroupCall:
             try:
-                await self.join_chat(original_chat_id, chat_id)
+                await self.join_assistant(original_chat_id, chat_id)
             except Exception as e:
                 raise e
             try:
