@@ -2,7 +2,7 @@
 
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from config import PLAYLIST_IMG_URL, PRIVATE_BOT_MODE, adminlist
+from config import PLAYLIST_IMG_URL, PRIVATE_BOT_MODE, adminlist, JOIN_DULU
 from strings import get_string
 from YukkiMusic import YouTube, app
 from YukkiMusic.misc import SUDOERS
@@ -22,6 +22,19 @@ def PlayWrapper(command):
                 return await message.reply_text(
                     "Bot is under maintenance. Please wait for some time..."
                 )
+
+        if JOIN_DULU:
+            try:
+                await app.get_chat_member(JOIN_DULU, message.from_user.id)
+            except UserNotParticipant:
+                sub = await app.export_chat_invite_link(JOIN_DULU)
+                kontol = InlineKeyboardMarkup(
+                    [
+                        [InlineKeyboardButton("📑 Join First", url=sub)]
+                    ]
+                )
+                return await message.reply_text("<blockquote><b>please {} join first before use this bot</b></blockquote>".format(message.from_user.mention), reply_markup=kontol)
+             
         if PRIVATE_BOT_MODE == str(True):
             if not await is_served_private_chat(message.chat.id):
                 await message.reply_text(

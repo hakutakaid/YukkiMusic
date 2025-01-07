@@ -12,6 +12,8 @@ load_dotenv()
 #Cookies
 COOKIES = getenv("COOKIES", None)
 
+JOIN_DULU = getenv("JOIN_DULU", None)
+
 # Get it from my.telegram.org
 API_ID = int(getenv("API_ID", ""))
 API_HASH = getenv("API_HASH")
