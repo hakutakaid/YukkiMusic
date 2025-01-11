@@ -4,25 +4,16 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from config import PLAYLIST_IMG_URL, PRIVATE_BOT_MODE, adminlist, JOIN_DULU
 from strings import get_string
-from pyrogram.enums import ChatMemberStatus
 from YukkiMusic import YouTube, app
 from YukkiMusic.misc import SUDOERS
 from YukkiMusic.utils.database import (get_cmode, get_lang,
                                        get_playmode, get_playtype,
                                        is_active_chat,
                                        is_commanddelete_on,
-                                       is_served_private_chat,
-                                       get_assistant)
+                                       is_served_private_chat)
 from YukkiMusic.utils.database.memorydatabase import is_maintenance
 from YukkiMusic.utils.inline.playlist import botplaylist_markup
-from pyrogram.errors import (
-    ChatAdminRequired,
-    InviteRequestSent,
-    UserAlreadyParticipant,
-    UserNotParticipant,
-)
-
-links = {}
+from pyrogram.errors import UserNotParticipant
 
 def PlayWrapper(command):
     async def wrapper(client, message):
@@ -137,72 +128,6 @@ def PlayWrapper(command):
             fplay = True
         else:
             fplay = None
-        if not await is_active_chat(chat_id):
-            userbot = await get_assistant(chat_id)
-            try:
-                try:
-                    get = await app.get_chat_member(chat_id, userbot.id)
-                except ChatAdminRequired:
-                    return await message.reply_text(_["call_12"])
-                if get.status in [
-                    ChatMemberStatus.BANNED,
-                    ChatMemberStatus.RESTRICTED,
-                ]:
-                    return await message.reply_text(
-                        _["call_13"].format(
-                            app.mention, userbot.id, userbot.name, userbot.username
-                        )
-                    )
-            except UserNotParticipant:
-                if chat_id in links:
-                    invitelink = links[chat_id]
-                else:
-                    if message.chat.username:
-                        invitelink = message.chat.username
-                        try:
-                            await userbot.resolve_peer(invitelink)
-                        except:
-                            pass
-                    else:
-                        try:
-                            invitelink = await app.export_chat_invite_link(chat_id)
-                        except ChatAdminRequired:
-                            return await message.reply_text(_["call_12"])
-                        except Exception as e:
-                            return await message.reply_text(
-                                _["call_14"].format(app.mention, type(e).__name__)
-                            )
-
-                if invitelink.startswith("https://t.me/+"):
-                    invitelink = invitelink.replace(
-                        "https://t.me/+", "https://t.me/joinchat/"
-                    )
-                myu = await message.reply_text(_["call_15"])
-                try:
-                    await asyncio.sleep(1)
-                    await userbot.join_chat(invitelink)
-                except InviteRequestSent:
-                    try:
-                        await app.approve_chat_join_request(chat_id, userbot.id)
-                    except Exception as e:
-                        return await message.reply_text(
-                            _["call_14"].format(app.mention, type(e).__name__)
-                        )
-                    await asyncio.sleep(3)
-                    await myu.edit(_["call_16"].format(app.mention))
-                except UserAlreadyParticipant:
-                    pass
-                except Exception as e:
-                    return await message.reply_text(
-                        _["call_14"].format(app.mention, type(e).__name__)
-                    )
-
-                links[chat_id] = invitelink
-
-                try:
-                    await userbot.resolve_peer(chat_id)
-                except:
-                    pass
         return await command(
             client,
             message,
