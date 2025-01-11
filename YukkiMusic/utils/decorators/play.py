@@ -11,7 +11,7 @@ from YukkiMusic.utils.database import (get_cmode, get_lang,
                                        is_active_chat,
                                        is_commanddelete_on,
                                        is_served_private_chat)
-from YukkiMusic.utils.database.memorydatabase import is_maintenance
+from YukkiMusic.utils.database.memorydatabase import is_maintenance, get_assistant
 from YukkiMusic.utils.inline.playlist import botplaylist_markup
 from pyrogram.errors import UserNotParticipant
 
