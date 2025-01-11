@@ -22,6 +22,8 @@ from pyrogram.errors import (
     UserNotParticipant,
 )
 
+links = {}
+
 def PlayWrapper(command):
     async def wrapper(client, message):
         if await is_maintenance() is False:
