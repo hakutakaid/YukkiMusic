@@ -14,7 +14,12 @@ from YukkiMusic.utils.database import (get_cmode, get_lang,
                                        get_assistant)
 from YukkiMusic.utils.database.memorydatabase import is_maintenance
 from YukkiMusic.utils.inline.playlist import botplaylist_markup
-from pyrogram.errors import UserNotParticipant
+from pyrogram.errors import (
+    ChatAdminRequired,
+    InviteRequestSent,
+    UserAlreadyParticipant,
+    UserNotParticipant,
+)
 
 def PlayWrapper(command):
     async def wrapper(client, message):
