@@ -4,6 +4,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from config import PLAYLIST_IMG_URL, PRIVATE_BOT_MODE, adminlist, JOIN_DULU
 from strings import get_string
+from pyrogram.enums import ChatMemberStatus
 from YukkiMusic import YouTube, app
 from YukkiMusic.misc import SUDOERS
 from YukkiMusic.utils.database import (get_cmode, get_lang,
